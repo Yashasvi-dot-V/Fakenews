@@ -1,0 +1,144 @@
+{% load static %}
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Fake News Prediction | ML Project</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,700,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/animate.css' %}">
+    <link rel="stylesheet" href="{% static 'css/icomoon.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}">
+    <link rel="stylesheet" href="{% static 'css/flexslider.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fonts/flaticon/font/flaticon.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <script src="{% static 'js/modernizr-2.6.2.min.js' %}"></script>
+
+    <style>
+        .result-container {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            transition: all 0.5s ease;
+        }
+
+        .real-news {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .fake-news {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="page">
+        <nav class="colorlib-nav">
+            <div class="top-menu">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-2 text-center">
+                            <div id="colorlib-logo"><a href="/">FAKENEWS</a></div>
+                        </div>
+                        <div class="col-md-10 text-right menu-1">
+                            <ul>
+                                <li class="active"><a href="/">Home</a></li>
+                                <li><a href="#" target="_blank">Dataset</a></li>
+                                <li><a href="#" target="_blank">Documentation</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="colorlib-intro">
+            <div class="container">
+                <div class="row text-center">
+                    <div class="col-md-8 col-md-offset-2">
+                        <h1 style="font-weight: 700;">Fake News Detection System</h1>
+                        <p style="font-size: 18px;">Utilizing Natural Language Processing (NLP) and Passive Aggressive
+                            Classifiers to identify misinformation.</p>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-top: 40px;">
+                    <div class="col-md-10 col-md-offset-1">
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="message">Paste News Content Here:</label>
+                                <textarea name="message" class="form-control" rows="8"
+                                    placeholder="Paste a news article or sentence here..."
+                                    style="border-radius: 10px; padding: 20px;">{{ original_text }}</textarea>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary btn-lg"
+                                    style="border-radius: 30px; padding: 12px 40px;">
+                                    Analyze Content
+                                </button>
+                            </div>
+                        </form>
+
+                        {% if output %}
+                        <div
+                            class="text-center result-container {% if 'Real' in output %}real-news{% else %}fake-news{% endif %} animated pulse">
+                            <h2 style="margin: 0; font-weight: 700;">
+                                {% if 'Real' in output %}
+                                <i class="icon-check"></i> {{ output }}
+                                {% else %}
+                                <i class="icon-cross"></i> {{ output }}
+                                {% endif %}
+                            </h2>
+
+                            <div style="margin-top: 15px;">
+                                <p style="margin-bottom: 5px; font-weight: 600;">System Confidence: {{ confidence }}%
+                                </p>
+                                <div class="progress"
+                                    style="height: 12px; background-color: rgba(0,0,0,0.1); border-radius: 10px;">
+                                    <div class="progress-bar {% if 'Real' in output %}progress-bar-success{% else %}progress-bar-danger{% endif %}"
+                                        role="progressbar" style="width: {{ confidence }}%;"
+                                        aria-valuenow="{{ confidence }}" aria-valuemin="0" aria-valuemax="100">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if error %}
+                        <div class="alert alert-warning text-center" style="margin-top: 20px;">
+                            {{ error }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/jquery.flexslider-min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+
+</body>
+
+</html>
