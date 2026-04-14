@@ -56,107 +56,109 @@ def get_top_keywords(text, vectorizer, n=3):
 
 # --- MAIN PREDICTION VIEW ---
 def predict_news(request):
+    # Fetch last 5 searches to display on the page
     history = NewsHistory.objects.all().order_by('-created_at')[:5]
 
     if request.method == 'POST':
         input_data = request.POST.get('message', '').strip()
         
-        if not input_data:
-            return render(request, 'index.html', {'error': "Please enter some text or a link!", 'history': history})
+        # --- CRITICAL: Initialize variables to prevent UnboundLocalError ---
+        if len(input_data) < 10:
+            return render(request, 'index.html', {
+                'error': "Input too short! Please enter a full news sentence or a valid URL for analysis.",
+                'history': history
+        })
+        text = ""
+        output = "Unknown"
+        confidence = 0.0
+        reasoning = "No specific patterns detected."
+        is_suspicious = False
+        # -----------------------------------------------------------------
 
-        # --- NEW: URL SCRAPER LOGIC ---
+        if not input_data:
+            return render(request, 'index.html', {'error': "Please enter text or a URL!", 'history': history})
+
+        # 1. URL Scraper Logic
         if input_data.startswith(('http://', 'https://')):
             try:
-                # Adding headers to mimic a browser so sites don't block us
-                # Replace your current headers with this detailed one
                 headers = {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-                'Accept-Language': 'en-US,en;q=0.5',
-                'Referer': 'https://www.google.com/'
-            }
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+                    'Accept-Language': 'en-US,en;q=0.5'
+                }
                 response = requests.get(input_data, headers=headers, timeout=10)
                 soup = BeautifulSoup(response.text, 'html.parser')
-                
-                # Extract text from all paragraph tags
                 paragraphs = soup.find_all('p')
                 text = " ".join([p.get_text() for p in paragraphs])
                 
-                if len(text) < 100:
-                    return render(request, 'index.html', {'error': "Could not extract enough text from the link. Try a different site.", 'history': history})
+                if len(text) < 50:
+                    return render(request, 'index.html', {'error': "Could not extract enough text from the link.", 'history': history})
             except Exception as e:
-                return render(request, 'index.html', {'error': f"Error fetching link: {e}", 'history': history})
+                return render(request, 'index.html', {'error': f"Link error: {e}", 'history': history})
         else:
             text = input_data
 
-        # 1. Step One: Check for Universal Truths
+        # 2. Universal Truths Layer
         clean_input = text.lower()
-        for fact in FACT_CHECK_LIST:
-            if fact in clean_input:
-                output = FACT_CHECK_LIST[fact]
+        for fact_key in FACT_CHECK_LIST:
+            if fact_key in clean_input:
+                output = FACT_CHECK_LIST[fact_key]
                 confidence = 100.0
-                NewsHistory.objects.create(news_text=text[:200], prediction=output, confidence=confidence)
+                reasoning = f"The input matches a verified factual statement ('{fact_key}') in the internal knowledge base."
+                
+                # Save and Return immediately
+                NewsHistory.objects.create(news_text=text[:100], prediction=output, confidence=confidence)
+                history = NewsHistory.objects.all().order_by('-created_at')[:5]
                 return render(request, 'index.html', {
                     'output': output, 'confidence': confidence, 
-                    'original_text': text[:500], 'history': history
+                    'reasoning': reasoning, 'history': history
                 })
 
-        # 2. Step Two: ML Prediction
+        # 3. ML Prediction & Feature Extraction
         cleaned = clean_text(text)
         vect = vectorizer.transform([cleaned])
         val = model.predict(vect)[0]
         proba = model.predict_proba(vect)[0]
         confidence = round(max(proba) * 100, 2)
 
-        # DEBUG PRINTS
-        print(f"\nRAW MODEL VAL: {val} | PROBABILITY: {proba}\n")
-
-        # ... inside your predict_news function, after the ML Prediction step ...
-
-        # Get the specific words the model focused on
+        # Get important words for reasoning
         important_words = get_top_keywords(text, vectorizer)
         word_list = ", ".join(important_words)
 
-        if is_suspicious:
-            output = "Fake News"
-            # Find which specific red flag was caught
-            found_flags = [word for word in red_flags if word in clean_input]
-            reasoning = f"This content was flagged as Fake because it contains sensationalist phrases like '{', '.join(found_flags)}'."
-        
-        elif val == 1:
-            output = "Real News"
-            reasoning = f"The model categorized this as Real because of the professional use of terms like '{word_list}', which are frequently found in credible news reporting."
-        
-        else:
-            output = "Fake News"
-            reasoning = f"The model detected patterns common in misinformation, specifically focusing on the context of words like '{word_list}'."
-
-        # 3. Step Three: Logic Overlays (Clickbait & Absurdity)
+        # 4. Red Flag / Heuristic Overlay
         red_flags = [
             'leaked', 'secret', 'exposed', 'mass panic', 'breaking',
             'shocking truth', 'conspiracy', 'hoax', 'giant penguins', 
-            'green eyes', 'hollow earth', 'blue sun',
-            'surprised to lose', 'miracle cure', 'aliens', 'unexplained' # Added satire/hoax words
+            'green eyes', 'hollow earth', 'blue sun', 'naturalnews', 'mike adam'
         ]
         
-        is_suspicious = any(word in clean_input for word in red_flags)
+        found_flags = [word for word in red_flags if word in clean_input]
+        is_suspicious = len(found_flags) > 0
 
         if is_suspicious:
             output = "Fake News"
-            confidence = max(confidence, 92.0) 
+            confidence = max(confidence, 92.0)
+            reasoning = f"Flagged as Fake due to the presence of sensationalist keywords: {', '.join(found_flags)}."
         elif confidence < 80:
             output = "Fake News (Unverified)"
+            reasoning = f"Model is uncertain (Confidence < 80%). The structure loosely resembles misinformation patterns around: {word_list}."
         else:
             output = "Real News" if val == 1 else "Fake News"
-        
-        # 4. Save Prediction to History
-        NewsHistory.objects.create(news_text=text[:200], prediction=output, confidence=confidence)
+            status = "credible journalism" if val == 1 else "known misinformation patterns"
+            reasoning = f"Linguistic analysis indicates a style consistent with {status}, focusing on key terms: {word_list}."
+
+        # 5. Final Save and Render
+        NewsHistory.objects.create(
+            news_text=text[:100], 
+            prediction=output, 
+            confidence=confidence, 
+            reasoning=reasoning  # <--- THIS IS THE FIX
+        )
         history = NewsHistory.objects.all().order_by('-created_at')[:5]
 
         return render(request, 'index.html', {
             'output': output,
             'confidence': confidence,
-            'original_text': text[:500] + ("..." if len(text) > 500 else ""),
+            'reasoning': reasoning,
             'history': history
         })
 
