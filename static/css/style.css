@@ -68,17 +68,17 @@ body {
     gap: 30px;
     margin-top: 40px;
 }
+/* Update these specific parts in your style.css */
 
 .history-card {
     background: #ffffff;
     border-radius: 24px;
     padding: 30px;
     border: 1px solid #f0f0f0;
-    position: relative;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.02);
     transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-    opacity: 0; /* For Scroll Effect */
-    transform: translateY(40px);
+    opacity: 0;
+    transform: translateY(30px);
+    text-align: left;
 }
 
 .history-card.visible {
@@ -86,68 +86,41 @@ body {
     transform: translateY(0);
 }
 
-/* Yellow.ai Inspired Hover */
+/* FULL BOX HOVER COLOR */
 .history-card:hover {
-    transform: translateY(-12px);
-    border-color: #f2ff00;
-    box-shadow: 0 40px 80px rgba(0,0,0,0.08);
+    background-color: #2e2e2db1 !important; /* The Yellow.ai Yellow */
+    border-color: #080808 !important;
+    transform: translateY(-10px);
+    box-shadow: 0 30px 60px rgba(64, 65, 63, 0.3);
 }
 
-.status-pill {
-    padding: 6px 16px;
-    border-radius: 50px;
-    font-size: 10px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    display: inline-block;
-    margin-bottom: 20px;
+/* Ensure all text turns black on yellow background hover */
+.history-card:hover h4, 
+.history-card:hover p, 
+.history-card:hover span,
+.history-card:hover .reason-box {
+    color: #000 !important;
 }
 
-.pill-real { background: #e6f6ec; color: #059669; }
-.pill-fake { background: #fff1f2; color: #e11d48; }
-
-.news-snippet {
-    font-size: 16px;
-    font-weight: 600;
-    color: #111;
-    line-height: 1.4;
-    margin-bottom: 15px;
-}
-
-/* Reason Box - High Visibility */
 .reason-box {
-    background: #f9f9fb;
-    border-left: 4px solid #f2ff00; /* Yellow.ai accent */
-    padding: 15px;
-    border-radius: 0 12px 12px 0;
-    margin-bottom: 20px;
+    background: #f9f9f9;
+    border-left: 4px solid #101010;
+    padding: 12px;
+    border-radius: 0 8px 8px 0;
+    margin: 15px 0;
+    transition: 0.3s;
 }
 
-.reason-box p {
-    font-size: 13px;
-    color: #4b5563;
-    margin: 0;
-    font-style: italic;
-    line-height: 1.5;
+.history-card:hover .reason-box {
+    background: rgba(0,0,0,0.05); /* Slight darkening on hover */
+    border-left-color: #000;
 }
 
-.card-footer {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    font-weight: 600;
-    color: #9ca3af;
-    border-top: 1px solid #f3f4f6;
-    padding-top: 15px;
-}
-
-/* 5. Analyze Button */
-.btn-pill {
+.btn-view-more {
     background: #000;
     color: #fff !important;
     border-radius: 50px;
-    padding: 18px 50px;
+    padding: 14px 40px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -155,17 +128,7 @@ body {
     transition: 0.3s;
 }
 
-.btn-pill:hover {
-    background: #f2ff00;
-    color: #000 !important;
-    transform: scale(1.05);
-}
-
-/* Input Area */
-textarea.form-control {
-    background: #f9f9f9 !important;
-    border: 1px solid #eeeeee !important;
-    border-radius: 20px !important;
-    padding: 25px !important;
-    font-size: 16px;
+.btn-view-more:hover {
+    background: #333;
+    transform: translateY(-2px);
 }
