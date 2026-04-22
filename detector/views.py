@@ -15,10 +15,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 model_path = os.path.join(BASE_DIR, 'detector', 'model.pkl')
 vect_path = os.path.join(BASE_DIR, 'detector', 'tfidfvect.pkl')
 
-with open(model_path, 'rb') as f:
-    model = pickle.load(f)
-with open(vect_path, 'rb') as f:
-    vectorizer = pickle.load(f)
+try:
+    with open(model_path, 'rb') as f:
+        model = pickle.load(f)
+    with open(vect_path, 'rb') as f:
+        vectorizer = pickle.load(f)
+except FileNotFoundError:
+    model = None
+    vectorizer = None
 
 nltk.download('stopwords')
 ps = PorterStemmer()
@@ -41,39 +45,30 @@ def clean_text(text):
     return text
 
 def get_top_keywords(text, vectorizer, n=3):
-    # Transform the single input
     tfidf_matrix = vectorizer.transform([clean_text(text)])
     feature_names = vectorizer.get_feature_names_out()
-    
-    # Get the scores for this specific text
     scores = tfidf_matrix.toarray()[0]
-    
-    # Find the indices of the highest scoring words
     top_indices = scores.argsort()[-n:][::-1]
-    
-    # Return the actual words
     return [feature_names[i] for i in top_indices if scores[i] > 0]
 
 # --- MAIN PREDICTION VIEW ---
 def predict_news(request):
-    # Fetch last 5 searches to display on the page
     history = NewsHistory.objects.all().order_by('-created_at')[:5]
 
     if request.method == 'POST':
         input_data = request.POST.get('message', '').strip()
-        
-        # --- CRITICAL: Initialize variables to prevent UnboundLocalError ---
+
         if len(input_data) < 10:
             return render(request, 'index.html', {
                 'error': "Input too short! Please enter a full news sentence or a valid URL for analysis.",
                 'history': history
-        })
+            })
+
         text = ""
         output = "Unknown"
         confidence = 0.0
         reasoning = "No specific patterns detected."
         is_suspicious = False
-        # -----------------------------------------------------------------
 
         if not input_data:
             return render(request, 'index.html', {'error': "Please enter text or a URL!", 'history': history})
@@ -89,7 +84,7 @@ def predict_news(request):
                 soup = BeautifulSoup(response.text, 'html.parser')
                 paragraphs = soup.find_all('p')
                 text = " ".join([p.get_text() for p in paragraphs])
-                
+
                 if len(text) < 50:
                     return render(request, 'index.html', {'error': "Could not extract enough text from the link.", 'history': history})
             except Exception as e:
@@ -104,33 +99,37 @@ def predict_news(request):
                 output = FACT_CHECK_LIST[fact_key]
                 confidence = 100.0
                 reasoning = f"The input matches a verified factual statement ('{fact_key}') in the internal knowledge base."
-                
-                # Save and Return immediately
+
                 NewsHistory.objects.create(news_text=text[:100], prediction=output, confidence=confidence)
                 history = NewsHistory.objects.all().order_by('-created_at')[:5]
                 return render(request, 'index.html', {
-                    'output': output, 'confidence': confidence, 
+                    'output': output, 'confidence': confidence,
                     'reasoning': reasoning, 'history': history
                 })
 
         # 3. ML Prediction & Feature Extraction
+        if model is None or vectorizer is None:
+            return render(request, 'index.html', {
+                'error': "Model not found. Please train the model first.",
+                'history': history
+            })
+
         cleaned = clean_text(text)
         vect = vectorizer.transform([cleaned])
         val = model.predict(vect)[0]
         proba = model.predict_proba(vect)[0]
         confidence = round(max(proba) * 100, 2)
 
-        # Get important words for reasoning
         important_words = get_top_keywords(text, vectorizer)
         word_list = ", ".join(important_words)
 
         # 4. Red Flag / Heuristic Overlay
         red_flags = [
             'leaked', 'secret', 'exposed', 'mass panic', 'breaking',
-            'shocking truth', 'conspiracy', 'hoax', 'giant penguins', 
+            'shocking truth', 'conspiracy', 'hoax', 'giant penguins',
             'green eyes', 'hollow earth', 'blue sun', 'naturalnews', 'mike adam'
         ]
-        
+
         found_flags = [word for word in red_flags if word in clean_input]
         is_suspicious = len(found_flags) > 0
 
@@ -148,10 +147,10 @@ def predict_news(request):
 
         # 5. Final Save and Render
         NewsHistory.objects.create(
-            news_text=text[:100], 
-            prediction=output, 
-            confidence=confidence, 
-            reasoning=reasoning  # <--- THIS IS THE FIX
+            news_text=text[:100],
+            prediction=output,
+            confidence=confidence,
+            reasoning=reasoning
         )
         history = NewsHistory.objects.all().order_by('-created_at')[:5]
 

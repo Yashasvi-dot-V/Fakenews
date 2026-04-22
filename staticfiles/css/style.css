@@ -1,0 +1,134 @@
+/* =======================================================
+* THEME: Premium Intelligence (Logically + Yellow.ai)
+* ======================================================= */
+
+/* 1. Global Reset & Fonts */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #ffffff !important;
+    color: #111;
+    overflow-x: hidden;
+}
+
+/* 2. Navigation Fix (Removes Bullets) */
+.colorlib-nav {
+    background: #ffffff;
+    padding: 15px 0;
+    border-bottom: 1px solid #f2f2f2;
+}
+
+.colorlib-nav ul {
+    margin: 0;
+    padding: 0;
+    list-style: none !important; /* Removes dots */
+    display: flex;
+    justify-content: flex-end;
+}
+
+.colorlib-nav ul li {
+    display: inline-block;
+    margin-left: 25px;
+}
+
+.colorlib-nav ul li a {
+    color: #111 !important;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-decoration: none;
+}
+
+#colorlib-logo a {
+    font-weight: 800;
+    letter-spacing: -1px;
+    font-size: 22px;
+    color: #000 !important;
+}
+
+/* 3. Hero Section */
+.hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 5.5rem;
+    letter-spacing: -2px;
+    color: #000;
+    font-weight: 400;
+    margin-bottom: 20px;
+}
+
+/* 4. Colorful Box Grid & Cards */
+.history-section {
+    padding: 80px 0;
+    background: #fdfdfd;
+}
+
+.history-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+/* Update these specific parts in your style.css */
+
+.history-card {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 30px;
+    border: 1px solid #f0f0f0;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    opacity: 0;
+    transform: translateY(30px);
+    text-align: left;
+}
+
+.history-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* FULL BOX HOVER COLOR */
+.history-card:hover {
+    background-color: #2e2e2db1 !important; /* The Yellow.ai Yellow */
+    border-color: #080808 !important;
+    transform: translateY(-10px);
+    box-shadow: 0 30px 60px rgba(64, 65, 63, 0.3);
+}
+
+/* Ensure all text turns black on yellow background hover */
+.history-card:hover h4, 
+.history-card:hover p, 
+.history-card:hover span,
+.history-card:hover .reason-box {
+    color: #000 !important;
+}
+
+.reason-box {
+    background: #f9f9f9;
+    border-left: 4px solid #101010;
+    padding: 12px;
+    border-radius: 0 8px 8px 0;
+    margin: 15px 0;
+    transition: 0.3s;
+}
+
+.history-card:hover .reason-box {
+    background: rgba(0,0,0,0.05); /* Slight darkening on hover */
+    border-left-color: #000;
+}
+
+.btn-view-more {
+    background: #000;
+    color: #fff !important;
+    border-radius: 50px;
+    padding: 14px 40px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: none;
+    transition: 0.3s;
+}
+
+.btn-view-more:hover {
+    background: #333;
+    transform: translateY(-2px);
+}
