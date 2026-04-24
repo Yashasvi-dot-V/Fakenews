@@ -10,3 +10,5 @@ nltk==3.9.4
 requests==2.33.1
 beautifulsoup4==4.14.3
 pillow==12.1.1
+langdetect==1.0.9
+tqdm==4.67.1
