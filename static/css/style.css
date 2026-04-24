@@ -86,20 +86,33 @@ body {
     transform: translateY(0);
 }
 
-/* FULL BOX HOVER COLOR */
+/* Ensure all text turns black on yellow background hover */
+
+
 .history-card:hover {
-    background-color: #2e2e2db1 !important; /* The Yellow.ai Yellow */
+    background-color: #969690b1 !important;
     border-color: #080808 !important;
-    transform: translateY(-10px);
-    box-shadow: 0 30px 60px rgba(64, 65, 63, 0.3);
+    transform: translateY(-10px) !important;
+    box-shadow: 0 30px 60px rgba(64, 65, 63, 0.3) !important;
 }
 
-/* Ensure all text turns black on yellow background hover */
-.history-card:hover h4, 
-.history-card:hover p, 
+.history-card:hover h4,
+.history-card:hover p,
 .history-card:hover span,
+.history-card:hover .reason-box,
+.history-card:hover .card-footer-row {
+    color: #fff !important;
+}
+
 .history-card:hover .reason-box {
-    color: #000 !important;
+    background: rgba(255,255,255,0.08) !important;
+    border-left-color: #fff !important;
+}
+
+.history-card:hover .pill-real,
+.history-card:hover .pill-fake {
+    background: rgba(255,255,255,0.15) !important;
+    color: #fff !important;
 }
 
 .reason-box {
