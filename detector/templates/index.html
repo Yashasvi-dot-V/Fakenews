@@ -20,14 +20,7 @@
             <div class="container">
                 <div class="row" style="display: flex; align-items: center;">
                     <div class="col-md-4">
-                        <div id="colorlib-logo"><a href="/">LOGICALLY.AI</a></div>
-                    </div>
-                    <div class="col-md-8 text-right">
-                        <ul>
-                            <li><a href="/">Predictor</a></li>
-                            <li><a href="#">About Agents</a></li>
-                            <li><a href="#">Documentation</a></li>
-                        </ul>
+                        <div id="colorlib-logo"><a href="/">VERIFEX.AI</a></div>
                     </div>
                 </div>
             </div>
@@ -54,7 +47,7 @@
                 {% if error %}
                 <div class="row" style="margin-top: 40px;">
                     <div class="col-md-8 col-md-offset-2">
-                        <div class="intel-card error-card">
+                        <div class="intel-card">
                             <div class="side-stripe stripe-dark"></div>
                             <div class="intel-body">
                                 <span class="card-eyebrow">Input Error</span>
@@ -70,14 +63,12 @@
                 {% if output %}
                 <div class="row" style="margin-top: 40px;">
                     <div class="col-md-8 col-md-offset-2">
-                        <div class="intel-card result-card {% if 'Real' in output %}result-real{% else %}result-fake{% endif %}">
+                        <div class="intel-card">
                             <div class="side-stripe {% if 'Real' in output %}stripe-real{% else %}stripe-fake{% endif %}"></div>
-
                             <div class="intel-body">
                                 <span class="card-eyebrow">
                                     {% if 'Real' in output %}Verified Narrative{% else %}Flagged Narrative{% endif %}
                                 </span>
-
                                 <div class="result-top">
                                     <h3 class="result-verdict {% if 'Real' in output %}verdict-real{% else %}verdict-fake{% endif %}">
                                         {{ output }}
@@ -87,16 +78,12 @@
                                         <span class="score-lbl">confidence</span>
                                     </div>
                                 </div>
-
-                                <!-- confidence bar -->
                                 <div class="conf-track">
                                     <div class="conf-fill {% if 'Real' in output %}fill-real{% else %}fill-fake{% endif %}"
                                          style="width: {{ confidence|default:0 }}%;"></div>
                                 </div>
-
-                                <!-- reasoning -->
                                 <div class="reason-box" style="margin-top: 18px;">
-                                    <span class="card-eyebrow" style="margin-bottom: 5px; display:block;">Analysis</span>
+                                    <span class="card-eyebrow" style="margin-bottom: 5px; display: block;">Analysis</span>
                                     <p>{{ reasoning }}</p>
                                 </div>
                             </div>
@@ -111,7 +98,7 @@
         <!-- HISTORY SECTION -->
         <div class="history-section">
             <div class="container text-center">
-                <h2 style="font-family: 'Playfair Display', serif; font-size: 3.5rem; margin-bottom: 20px; color: #000;">
+                <h2 style="font-family: 'Playfair Display', serif; font-size: 3.5rem; color: #000;">
                     Intelligence Log
                 </h2>
 
@@ -140,149 +127,12 @@
                 </div>
 
                 {% if history %}
-                <button id="viewMoreBtn" class="btn btn-view-more" style="margin-top: 40px;">View Full Dataset</button>
+                <button id="viewMoreBtn" class="btn btn-view-more">View Full Dataset</button>
                 {% endif %}
             </div>
         </div>
 
     </div>
-
-    <style>
-        .hidden-card { display: none !important; }
-
-        /* Shared intel card base — same feel as history cards */
-        .intel-card {
-            display: flex;
-            align-items: stretch;
-            background: #ffffff;
-            border-radius: 24px;
-            border: 1px solid #f0f0f0;
-            text-align: left;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.05);
-            overflow: hidden;
-            animation: fadeUp 0.35s ease;
-        }
-        .side-stripe {
-            width: 5px;
-            flex-shrink: 0;
-            border-radius: 24px 0 0 24px;
-        }
-        .stripe-dark  { background: #111; }
-        .stripe-real  { background: #16a34a; }
-        .stripe-fake  { background: #dc2626; }
-
-        .intel-body {
-            flex: 1;
-            padding: 28px 32px;
-        }
-        .card-eyebrow {
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: #999;
-        }
-        .card-text {
-            margin: 6px 0 0;
-            font-size: 15px;
-            color: #111;
-            font-weight: 500;
-            line-height: 1.5;
-        }
-        .card-ico {
-            font-size: 1.3rem;
-            color: #ddd;
-            padding: 28px 24px 28px 0;
-            align-self: center;
-        }
-
-        /* Result card specifics */
-        .result-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 8px 0 14px;
-        }
-        .result-verdict {
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            font-weight: 700;
-            margin: 0;
-        }
-        .verdict-real { color: #14532d; }
-        .verdict-fake { color: #7f1d1d; }
-
-        /* Score badge — same background as your card hover (#2e2e2d) */
-        .score-box {
-            background: #f4f4f4;
-            border-radius: 16px;
-            padding: 10px 18px;
-            text-align: center;
-            min-width: 80px;
-            flex-shrink: 0;
-        }
-        .score-num {
-            display: block;
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: #000;
-            line-height: 1;
-        }
-        .score-lbl {
-            display: block;
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            color: #999;
-            margin-top: 3px;
-        }
-
-        /* Confidence bar — thin, same as your card footer divider style */
-        .conf-track {
-            width: 100%;
-            height: 3px;
-            background: #f0f0f0;
-            border-radius: 99px;
-            overflow: hidden;
-        }
-        .conf-fill {
-            height: 100%;
-            border-radius: 99px;
-            transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-        .fill-real { background: #16a34a; }
-        .fill-fake { background: #dc2626; }
-
-        /* Status pills for history cards */
-        .status-pill {
-            display: inline-block;
-            padding: 5px 14px;
-            border-radius: 50px;
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            margin-bottom: 14px;
-        }
-        .pill-real { background: #dcfce7; color: #14532d; }
-        .pill-fake { background: #fee2e2; color: #7f1d1d; }
-
-        /* Card footer row */
-        .card-footer-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            color: #999;
-            margin-top: 16px;
-            padding-top: 12px;
-            border-top: 1px solid #f0f0f0;
-        }
-
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(14px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-    </style>
 
     <script>
         const viewMoreBtn = document.getElementById('viewMoreBtn');
@@ -312,6 +162,5 @@
             }, 120);
         }
     </script>
-
 </body>
 </html>

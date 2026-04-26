@@ -1,35 +1,35 @@
 /* =======================================================
-* THEME: Premium Intelligence (Logically + Yellow.ai)
-* ======================================================= */
+ * THEME: Premium Intelligence — Logically.AI
+ * ======================================================= */
 
-/* 1. Global Reset & Fonts */
+/* 1. Global — newspaper background on full page */
 body {
     font-family: 'Inter', sans-serif;
-    background-color: #ffffff !important;
     color: #111;
     overflow-x: hidden;
+    background-image: linear-gradient(rgba(255,255,255,0.92), rgba(255,255,255,0.92)),
+                      url('https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=2070');
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
 }
 
-/* 2. Navigation Fix (Removes Bullets) */
+/* 2. Nav */
 .colorlib-nav {
-    background: #ffffff;
+    background: rgba(255,255,255,0.97);
     padding: 15px 0;
     border-bottom: 1px solid #f2f2f2;
+    position: relative;
+    z-index: 10;
 }
-
 .colorlib-nav ul {
     margin: 0;
     padding: 0;
-    list-style: none !important; /* Removes dots */
+    list-style: none !important;
     display: flex;
     justify-content: flex-end;
 }
-
-.colorlib-nav ul li {
-    display: inline-block;
-    margin-left: 25px;
-}
-
+.colorlib-nav ul li { display: inline-block; margin-left: 25px; }
 .colorlib-nav ul li a {
     color: #111 !important;
     font-weight: 700;
@@ -38,7 +38,6 @@ body {
     letter-spacing: 1.5px;
     text-decoration: none;
 }
-
 #colorlib-logo a {
     font-weight: 800;
     letter-spacing: -1px;
@@ -46,7 +45,13 @@ body {
     color: #000 !important;
 }
 
-/* 3. Hero Section */
+/* 3. Hero */
+.colorlib-intro {
+    padding: 80px 0 80px;
+    position: relative;
+}
+
+/* 4. Hero title */
 .hero-title {
     font-family: 'Playfair Display', serif;
     font-size: 5.5rem;
@@ -56,52 +61,84 @@ body {
     margin-bottom: 20px;
 }
 
-/* 4. Colorful Box Grid & Cards */
-.history-section {
-    padding: 80px 0;
-    background: #fdfdfd;
+/* 5. Form elements */
+.form-control {
+    border-radius: 16px !important;
+    border: 1.5px solid #e5e5e5 !important;
+    padding: 18px !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 15px !important;
+    background: rgba(255,255,255,0.95) !important;
+    transition: border-color 0.2s;
 }
-
-.history-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 30px;
-    margin-top: 40px;
+.form-control:focus {
+    border-color: #000 !important;
+    box-shadow: none !important;
+    outline: none !important;
+    background: #fff !important;
 }
-/* Update these specific parts in your style.css */
+.btn-pill {
+    background: #000;
+    color: #fff !important;
+    border-radius: 50px;
+    padding: 14px 40px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-size: 11px;
+    border: none;
+    transition: background 0.2s, transform 0.2s;
+}
+.btn-pill:hover { background: #333; transform: translateY(-2px); }
 
-.history-card {
-    background: #ffffff;
+/* 6. Intel cards (error + result) */
+.intel-card {
+    display: flex;
+    align-items: stretch;
+    background: rgba(255,255,255,0.97);
     border-radius: 24px;
-    padding: 30px;
     border: 1px solid #f0f0f0;
-    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-    opacity: 0;
-    transform: translateY(30px);
     text-align: left;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.06);
+    overflow: hidden;
+    animation: fadeUp 0.35s ease;
 }
-
-.history-card.visible {
-    opacity: 1;
-    transform: translateY(0);
+.side-stripe { width: 5px; flex-shrink: 0; }
+.stripe-dark { background: #111; }
+.stripe-real { background: #16a34a; }
+.stripe-fake { background: #dc2626; }
+.intel-body { flex: 1; padding: 28px 32px; }
+.card-eyebrow {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #999;
 }
+.card-text { margin: 6px 0 0; font-size: 15px; color: #111; font-weight: 500; line-height: 1.5; }
+.card-ico { font-size: 1.3rem; color: #ddd; padding: 28px 24px 28px 0; align-self: center; }
 
-/* FULL BOX HOVER COLOR */
-.history-card:hover {
-    background-color: #2e2e2db1 !important; /* The Yellow.ai Yellow */
-    border-color: #080808 !important;
-    transform: translateY(-10px);
-    box-shadow: 0 30px 60px rgba(64, 65, 63, 0.3);
+/* Result card specifics */
+.result-top { display: flex; justify-content: space-between; align-items: center; margin: 8px 0 14px; }
+.result-verdict { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; margin: 0; }
+.verdict-real { color: #14532d; }
+.verdict-fake { color: #7f1d1d; }
+.score-box {
+    background: #f4f4f4;
+    border-radius: 16px;
+    padding: 10px 18px;
+    text-align: center;
+    min-width: 80px;
+    flex-shrink: 0;
 }
+.score-num { display: block; font-size: 1.5rem; font-weight: 800; color: #000; line-height: 1; }
+.score-lbl { display: block; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #999; margin-top: 3px; }
+.conf-track { width: 100%; height: 3px; background: #f0f0f0; border-radius: 99px; overflow: hidden; }
+.conf-fill { height: 100%; border-radius: 99px; transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1); }
+.fill-real { background: #16a34a; }
+.fill-fake { background: #dc2626; }
 
-/* Ensure all text turns black on yellow background hover */
-.history-card:hover h4, 
-.history-card:hover p, 
-.history-card:hover span,
-.history-card:hover .reason-box {
-    color: #000 !important;
-}
-
+/* 7. Reason box */
 .reason-box {
     background: #f9f9f9;
     border-left: 4px solid #101010;
@@ -110,12 +147,78 @@ body {
     margin: 15px 0;
     transition: 0.3s;
 }
+.reason-box p { margin: 0; font-size: 14px; color: #333; line-height: 1.6; }
 
-.history-card:hover .reason-box {
-    background: rgba(0,0,0,0.05); /* Slight darkening on hover */
-    border-left-color: #000;
+/* 8. History section — fixed spacing */
+.history-section {
+    padding: 60px 0 80px;  /* reduced top padding */
+    background: transparent; /* let body background show through */
+}
+.history-section h2 {
+    margin-bottom: 8px !important; /* tighter gap under heading */
+}
+.history-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 30px;
+    margin-top: 20px; /* was 40px — reduced */
 }
 
+/* 9. History cards */
+.history-card {
+    background: rgba(255,255,255,0.97);
+    border-radius: 24px;
+    padding: 30px;
+    border: 1px solid #f0f0f0;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    opacity: 0;
+    transform: translateY(30px);
+    text-align: left;
+}
+.history-card.visible { opacity: 1; transform: translateY(0); }
+.history-card:hover {
+    background-color: #969690b1 !important;
+    border-color: #080808 !important;
+    transform: translateY(-10px) !important;
+    box-shadow: 0 30px 60px rgba(64,65,63,0.3) !important;
+}
+.history-card:hover h4,
+.history-card:hover p,
+.history-card:hover span { color: #fff !important; }
+.history-card:hover .reason-box {
+    background: rgba(255,255,255,0.08) !important;
+    border-left-color: #fff !important;
+}
+.history-card:hover .reason-box p { color: #fff !important; }
+.history-card:hover .pill-real,
+.history-card:hover .pill-fake { background: rgba(255,255,255,0.15) !important; color: #fff !important; }
+.history-card:hover .card-footer-row { border-top-color: rgba(255,255,255,0.15) !important; }
+
+/* 10. Status pills — RED for fake, GREEN for real */
+.status-pill {
+    display: inline-block;
+    padding: 5px 14px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 14px;
+}
+.pill-real { background: #dcfce7; color: #14532d; }  /* green */
+.pill-fake { background: #fee2e2; color: #7f1d1d; }  /* red */
+
+/* 11. Card footer */
+.card-footer-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #999;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid #f0f0f0;
+}
+
+/* 12. View more button — sits close to the cards */
 .btn-view-more {
     background: #000;
     color: #fff !important;
@@ -126,9 +229,16 @@ body {
     letter-spacing: 1px;
     border: none;
     transition: 0.3s;
+    margin-top: 24px !important; /* was 40px — tightened */
+    display: inline-block;
 }
+.btn-view-more:hover { background: #333; transform: translateY(-2px); }
 
-.btn-view-more:hover {
-    background: #333;
-    transform: translateY(-2px);
+/* 13. Hidden */
+.hidden-card { display: none !important; }
+
+/* 14. Animation */
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
